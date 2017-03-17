@@ -1,0 +1,67 @@
+- name: Update packages
+  apt:
+    upgrade: dist 
+
+- name: Install dependencies
+  action: apt pkg={{item}} state=installed
+  with_items:
+       - git
+       - npm
+       - nodejs
+       - curl
+
+- name: Install Docker
+  shell: curl -sSL https://get.docker.com/ | sh
+
+- name: Install Docker-compose
+  shell: curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+
+- name: chmod docker-compose
+  shell: chmod +x /usr/local/bin/docker-compose
+
+- git:
+    repo: https://github.com/CaliOpen/Caliopen.git 
+    dest: "{{ install_dir }}"
+
+- name: Build Docker Services
+  shell: docker-compose build  
+  args:
+    chdir: "{{ devtools_dir }}"
+
+- name: Docker up redis cassandra elasticsearch
+  shell: docker-compose up -d redis cassandra elasticsearch 
+  args:
+    chdir: "{{ devtools_dir }}"
+
+- name: docker-compose run cli setup
+  shell: docker-compose run cli setup
+  args:
+    chdir: "{{ devtools_dir }}"
+
+- name: Setup storage and create user
+  shell: docker-compose run cli create_user -e {{ db_user }} -p {{ db_password }}
+  args:
+    chdir: "{{ devtools_dir }}"
+  register: command_result
+  failed_when: "'Username already exist' in command_result.stderr"
+  ignore_errors: True
+
+
+- name: Import datas
+  shell: docker-compose run cli import -e dev -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
+  args:
+    chdir: "{{ devtools_dir }}"
+  register: command_result
+  failed_when: "'Error' in command_result.stderr"
+  ignore_errors: True
+
+
+- name: Start API
+  shell: docker-compose up -d api
+  args:
+    chdir: "{{ devtools_dir }}"
+
+- name: Start Frontend
+  shell: docker-compose up -d frontend
+  args:
+    chdir: "{{ devtools_dir }}"

@@ -1,0 +1,5 @@
+install_dir: /opt/caliopen/
+devtools_dir: /opt/caliopen/devtools/
+docker-compose_version: 1.11.2
+db_user: dev
+db_password: 123456

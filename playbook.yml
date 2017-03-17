@@ -1,0 +1,7 @@
+- hosts: all
+  become: yes
+  vars:
+    whoami: "{{ lookup('env', 'USER') }}"
+    user_home: "{{ lookup('env', 'HOME') }}"
+  roles:
+    - caliopen
