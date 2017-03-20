@@ -1,6 +1,6 @@
 - name: Update packages
   apt:
-    upgrade: dist 
+    upgrade: dist
 
 - name: Install dependencies
   action: apt pkg={{item}} state=installed
@@ -16,6 +16,15 @@
 
 - name: install a decent version of nodejs and npm
   action: apt pkg=nodejs state=installed
+
+- name: add yarn debian key
+  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+
+- name: add yarn to apt-source
+  shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+- name: install yarn
+  action: apt update_cache=yes pkg=yarn state=installed
 
 - name: generate iptables rules ipb4
   template: src=iptables.j2 dest=/etc/iptables/rules.v4
