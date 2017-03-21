@@ -10,6 +10,7 @@
        - facter
        - iptables
        - iptables-persistent
+       - nginx
 
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
@@ -91,3 +92,8 @@
   shell: docker-compose up -d frontend
   args:
     chdir: "{{ devtools_dir }}"
+
+- name: configure nginx
+  template: src=nginx.j2 dest=/etc/nginx/sites-available/poc
+  notify:
+      - restart nginx
