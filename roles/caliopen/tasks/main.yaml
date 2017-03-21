@@ -40,7 +40,7 @@
   shell: curl -sSL https://get.docker.com/ | sh
 
 - name: Install Docker-compose
-  shell: curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`" > /usr/local/bin/docker-compose
 
 - name: chmod docker-compose
   shell: chmod +x /usr/local/bin/docker-compose
@@ -59,12 +59,12 @@
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: docker-compose run cli setup
+- name: Setup storage
   shell: docker-compose run cli setup
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: Setup storage and create user
+- name: Create a Caliopen user
   shell: docker-compose run cli create_user -e {{ db_user }} -p {{ db_password }}
   args:
     chdir: "{{ devtools_dir }}"
