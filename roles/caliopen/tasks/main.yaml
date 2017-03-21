@@ -37,6 +37,11 @@
   notify:
       - restart iptables-persistent
 
+- name: configure nginx
+  template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
+  notify:
+      - restart nginx
+
 - name: Install Docker
   shell: curl -sSL https://get.docker.com/ | sh
 
@@ -75,7 +80,7 @@
 
 
 - name: Import datas
-  shell: docker-compose run cli import -e dev -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
+  shell: docker-compose run cli import -e dev@caliopen.local -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
   args:
     chdir: "{{ devtools_dir }}"
   register: command_result
@@ -93,7 +98,5 @@
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: configure nginx
-  template: src=nginx.j2 dest=/etc/nginx/sites-available/poc
-  notify:
-      - restart nginx
+- name: reload correct iptables chains after docker startup
+  action: netfilter-persistent flush && netfilter-persistent restart
