@@ -11,6 +11,7 @@
        - iptables
        - iptables-persistent
        - nginx
+       - fail2ban
 
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
