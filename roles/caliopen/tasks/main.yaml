@@ -10,6 +10,8 @@
        - facter
        - iptables
        - iptables-persistent
+       - nginx
+       - fail2ban
 
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
@@ -36,11 +38,16 @@
   notify:
       - restart iptables-persistent
 
+- name: configure nginx
+  template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
+  notify:
+      - restart nginx
+
 - name: Install Docker
   shell: curl -sSL https://get.docker.com/ | sh
 
 - name: Install Docker-compose
-  shell: curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`" > /usr/local/bin/docker-compose
 
 - name: chmod docker-compose
   shell: chmod +x /usr/local/bin/docker-compose
@@ -59,35 +66,16 @@
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: docker-compose run cli setup
+- name: Setup storage
   shell: docker-compose run cli setup
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: Setup storage and create user
-  shell: docker-compose run cli create_user -e {{ db_user }} -p {{ db_password }}
-  args:
-    chdir: "{{ devtools_dir }}"
-  register: command_result
-  failed_when: "'Username already exist' in command_result.stderr"
-  ignore_errors: True
+- name: install caliopen docker stack as a systemd service
+  template: src=caliopen-stack.service.j2 dest=/etc/systemd/system/caliopen-stack.service
 
+- name: enable caliopen docker stack service
+  shell: systemctl enable caliopen-stack.service
 
-- name: Import datas
-  shell: docker-compose run cli import -e dev -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
-  args:
-    chdir: "{{ devtools_dir }}"
-  register: command_result
-  failed_when: "'Error' in command_result.stderr"
-  ignore_errors: True
-
-
-- name: Start API
-  shell: docker-compose up -d api
-  args:
-    chdir: "{{ devtools_dir }}"
-
-- name: Start Frontend
-  shell: docker-compose up -d frontend
-  args:
-    chdir: "{{ devtools_dir }}"
+- name: start full caliopen docker stack
+  shell: systemctl start caliopen-stack.service

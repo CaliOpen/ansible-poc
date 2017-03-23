@@ -1,0 +1,12 @@
+[Unit]
+Description=Caliopen docker stack
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/local/bin/docker-compose -f {{ devtools_dir }}/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f  {{ devtools_dir }}/docker-compose.yml kill
+
+[Install]
+WantedBy=local.target
