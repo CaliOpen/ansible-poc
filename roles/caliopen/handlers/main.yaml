@@ -1,4 +1,4 @@
 - name: restart iptables-persistent
   shell: netfilter-persistent flush && netfilter-persistent restart
-- name: restrart nginx
+- name: restart nginx
   shell: systemctl restart nginx
