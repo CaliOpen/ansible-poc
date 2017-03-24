@@ -28,7 +28,7 @@
 - name: install yarn
   action: apt update_cache=yes pkg=yarn state=installed
 
-- name: generate iptables rules ipb4
+- name: generate iptables rules ipv4
   template: src=iptables.j2 dest=/etc/iptables/rules.v4
   notify:
       - restart iptables-persistent
@@ -38,7 +38,7 @@
   notify:
       - restart iptables-persistent
 
-- name: Deactivate the default nginx site
+- name: deactivate the default nginx site
   file: path=/etc/nginx/sites-enabled/default state=absent
 
 - name: configure nginx
@@ -46,10 +46,10 @@
   notify:
       - restart nginx
 
-- name: Install Docker
+- name: install docker
   shell: curl -sSL https://get.docker.com/ | sh
 
-- name: Install Docker-compose
+- name: install docker-compose
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`
     dest: /usr/local/bin/docker-compose
@@ -62,23 +62,23 @@
     repo: https://github.com/CaliOpen/Caliopen.git 
     dest: "{{ install_dir }}"
 
-- name: Build Docker Services
+- name: build docker services
   shell: docker-compose build  
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: Docker up redis cassandra elasticsearch
+- name: docker up redis cassandra elasticsearch
   shell: docker-compose up -d redis cassandra elasticsearch 
   args:
     chdir: "{{ devtools_dir }}"
 
-- name: wait for cassandra'database up
+- name: wait for cassandra's database up
   wait_for:
     host: 0.0.0.0
     port: 9042
     delay: 30
 
-- name: Setup storage
+- name: setup storage
   shell: docker-compose run cli setup
   args:
     chdir: "{{ devtools_dir }}"
