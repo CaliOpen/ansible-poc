@@ -47,7 +47,10 @@
   shell: curl -sSL https://get.docker.com/ | sh
 
 - name: Install Docker-compose
-  shell: curl -L "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`" > /usr/local/bin/docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
 
 - name: chmod docker-compose
   shell: chmod +x /usr/local/bin/docker-compose
@@ -65,6 +68,12 @@
   shell: docker-compose up -d redis cassandra elasticsearch 
   args:
     chdir: "{{ devtools_dir }}"
+
+- name: wait for cassandra'database up
+  wait_for:
+    host: 0.0.0.0
+    port: 9042
+    delay: 30
 
 - name: Setup storage
   shell: docker-compose run cli setup
