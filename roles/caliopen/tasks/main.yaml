@@ -13,6 +13,9 @@
        - nginx
        - fail2ban
 
+- name: enable ipv4 forwarding for docker's communication
+  shell: sysctl net.ipv4.conf.all.forwarding
+
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
 
