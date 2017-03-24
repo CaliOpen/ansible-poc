@@ -38,6 +38,9 @@
   notify:
       - restart iptables-persistent
 
+- name: Deactivate the default nginx site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
 - name: configure nginx
   template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
   notify:
