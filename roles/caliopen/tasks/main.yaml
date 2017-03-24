@@ -62,6 +62,12 @@
   args:
     chdir: "{{ devtools_dir }}"
 
+- name: wait for cassandra'database up
+  wait_for:
+    host: 0.0.0.0
+    port: 9042
+    delay: 30
+
 - name: docker-compose run cli setup
   shell: docker-compose run cli setup
   args:
