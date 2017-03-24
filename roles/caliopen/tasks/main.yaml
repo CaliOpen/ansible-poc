@@ -40,7 +40,10 @@
   shell: curl -sSL https://get.docker.com/ | sh
 
 - name: Install Docker-compose
-  shell: curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m`
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
 
 - name: chmod docker-compose
   shell: chmod +x /usr/local/bin/docker-compose
