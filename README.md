@@ -15,16 +15,15 @@ Mostly tested using a debian 8 VM on Gandi Iaas platform.
 ansible-playbook -i hosts -K playbook.yml
 ```
 
-# For deployment on local vagrant machine, please modify the hosts file and add your values for:
 
-- ansible_ssh_host=127.0.0.1
-
-
-# You can now deploy on vagrant machine and access it on port 8080
+# For deployment on local vagrant machine, use the following command:
 
 ```
 vagrant up
 ```
+
+# You can now access your caliopen instance with your web browser on localhost:8080
+
 
 
 # To load fixtures data
