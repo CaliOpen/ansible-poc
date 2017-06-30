@@ -1,0 +1,22 @@
+- name: Update packages
+  apt:
+    upgrade: dist
+
+- name: Set Postfix option type as internet site
+  debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+
+- name: Set Postfix option hostname
+  debconf: name=postifx question="postfix/mailname" value="{{ansible_fqdn}}" vtype="string"
+
+- name: Install postfix
+  apt: name=postfix state=present
+
+- name: generate main.cf
+  template: src=main.cf.j2 dest=/etc/postfix/main.cf
+  notify:
+      - restart postfix
+
+- name: generate master.cf
+  template: src=master.cf.j2 dest=/etc/postfix/master.cf
+  notify:
+    - restart postfix
