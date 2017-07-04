@@ -1,5 +1,6 @@
 - name: Update packages
   apt:
+    update_cache: yes
     upgrade: dist
 
 - name: Install dependencies
@@ -62,16 +63,17 @@
   shell: chmod +x /usr/local/bin/docker-compose
 
 - git:
-    repo: https://github.com/CaliOpen/Caliopen.git 
+    repo: https://github.com/CaliOpen/Caliopen.git
     dest: "{{ install_dir }}"
+    version: "{{ caliopen_version }}"
 
 - name: build docker services
-  shell: docker-compose build  
+  shell: docker-compose build
   args:
     chdir: "{{ devtools_dir }}"
 
 - name: docker up redis cassandra elasticsearch
-  shell: docker-compose up -d redis cassandra elasticsearch 
+  shell: docker-compose up -d redis cassandra elasticsearch
   args:
     chdir: "{{ devtools_dir }}"
 
