@@ -1,5 +1,6 @@
 - name: Update packages
   apt:
+    update_cache: yes
     upgrade: dist
 
 - name: Install dependencies
@@ -16,6 +17,12 @@
 - name: enable ipv4 forwarding for docker's communication
   shell: sysctl net.ipv4.conf.all.forwarding=1
 
+- name: change vm.max_map_count for elasticsearch in docker's environment
+  shell: sysctl -w vm.max_map_count=262144
+
+- name: make changes to kernel variables permanent
+  template: src=sysctl-docker.caliopen.conf dest=/etc/sysctl.d/docker.caliopen.conf
+
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
 
@@ -30,16 +37,6 @@
 
 - name: install yarn
   action: apt update_cache=yes pkg=yarn state=installed
-
-- name: generate iptables rules ipv4
-  template: src=iptables.j2 dest=/etc/iptables/rules.v4
-  notify:
-      - restart iptables-persistent
-
-- name: generate iptables rules ipv6
-  template: src=ip6tables.j2 dest=/etc/iptables/rules.v6
-  notify:
-      - restart iptables-persistent
 
 - name: deactivate the default nginx site
   file: path=/etc/nginx/sites-enabled/default state=absent
@@ -62,16 +59,17 @@
   shell: chmod +x /usr/local/bin/docker-compose
 
 - git:
-    repo: https://github.com/CaliOpen/Caliopen.git 
+    repo: https://github.com/CaliOpen/Caliopen.git
     dest: "{{ install_dir }}"
+    version: "{{ caliopen_version }}"
 
 - name: build docker services
-  shell: docker-compose build  
+  shell: docker-compose build
   args:
     chdir: "{{ devtools_dir }}"
 
 - name: docker up redis cassandra elasticsearch
-  shell: docker-compose up -d redis cassandra elasticsearch 
+  shell: docker-compose up -d redis cassandra elasticsearch
   args:
     chdir: "{{ devtools_dir }}"
 
