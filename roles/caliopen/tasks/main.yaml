@@ -17,6 +17,12 @@
 - name: enable ipv4 forwarding for docker's communication
   shell: sysctl net.ipv4.conf.all.forwarding=1
 
+- name: change vm.max_map_count for elasticsearch in docker's environment
+  shell: sysctl -w vm.max_map_count=262144
+
+- name: make changes to kernel variables permanent
+  template: src=sysctl-docker.caliopen.conf dest=/etc/sysctl.d/docker.caliopen.conf
+
 - name: download a decent version of nodejs
   shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
 
@@ -31,16 +37,6 @@
 
 - name: install yarn
   action: apt update_cache=yes pkg=yarn state=installed
-
-- name: generate iptables rules ipv4
-  template: src=iptables.j2 dest=/etc/iptables/rules.v4
-  notify:
-      - restart iptables-persistent
-
-- name: generate iptables rules ipv6
-  template: src=ip6tables.j2 dest=/etc/iptables/rules.v6
-  notify:
-      - restart iptables-persistent
 
 - name: deactivate the default nginx site
   file: path=/etc/nginx/sites-enabled/default state=absent

@@ -32,6 +32,8 @@ You can overide the version like this:
 ansible-playbook -i hosts -K playbook.yml --extra-vars "caliopen_version=HEAD"
 ```
 
+_By default vagrant will be provisioned with Caliopen HEAD revision_
+
 ## Development
 
 For deployment on local vagrant machine, use the following command:
