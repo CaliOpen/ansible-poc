@@ -23,21 +23,6 @@
 - name: make changes to kernel variables permanent
   template: src=sysctl-docker.caliopen.conf dest=/etc/sysctl.d/docker.caliopen.conf
 
-- name: download a decent version of nodejs
-  shell: curl -sSL https://deb.nodesource.com/setup_6.x | bash -
-
-- name: install a decent version of nodejs and npm
-  action: apt pkg=nodejs state=installed
-
-- name: add yarn debian key
-  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-
-- name: add yarn to apt-source
-  shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-- name: install yarn
-  action: apt update_cache=yes pkg=yarn state=installed
-
 - name: deactivate the default nginx site
   file: path=/etc/nginx/sites-enabled/default state=absent
 
