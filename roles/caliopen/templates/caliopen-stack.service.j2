@@ -5,7 +5,7 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/usr/local/bin/docker-compose -f {{ devtools_dir }}/docker-compose.staging.yml up -d frontend broker
+ExecStart=/usr/local/bin/docker-compose -f {{ devtools_dir }}/docker-compose.staging.yml up frontend broker
 ExecStop=/usr/local/bin/docker-compose -f  {{ devtools_dir }}/docker-compose.staging.yml stop
 
 [Install]
