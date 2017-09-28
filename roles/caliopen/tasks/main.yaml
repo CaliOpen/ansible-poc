@@ -32,7 +32,7 @@
     state: directory
 
 - name: install ssl certificate and private key
-  file: path={{ item }} dest=/etc/nginx/certs/
+  copy: src={{ item }} dest=/etc/nginx/certs/
   with_items:
     - caliopen.crt
     - caliopen.key
