@@ -26,6 +26,17 @@
 - name: deactivate the default nginx site
   file: path=/etc/nginx/sites-enabled/default state=absent
 
+- name: nginx certificate directory
+  file:
+    path: /etc/nginx/certs
+    state: directory
+
+- name: install ssl certificate and private key
+  copy: src={{ item }} dest=/etc/nginx/certs/
+  with_items:
+    - caliopen.crt
+    - caliopen.key
+
 - name: configure nginx
   template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
   notify:
