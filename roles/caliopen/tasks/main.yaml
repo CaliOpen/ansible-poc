@@ -1,7 +1,7 @@
 - name: Update packages
   apt:
     update_cache: yes
-    upgrade: dist
+    upgrade: yes
 
 - name: Install dependencies
   action: apt pkg={{item}} state=installed
@@ -56,6 +56,7 @@
 
 - git:
     repo: https://github.com/CaliOpen/Caliopen.git
+    force: true
     dest: "{{ install_dir }}"
     version: "{{ caliopen_version }}"
 

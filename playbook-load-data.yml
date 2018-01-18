@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: caliopen
   become: yes
   vars:
     whoami: "{{ lookup('env', 'USER') }}"
