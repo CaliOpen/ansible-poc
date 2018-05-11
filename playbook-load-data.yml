@@ -10,7 +10,7 @@
       chdir: "/opt/caliopen/devtools"
 
   - name: Create a Caliopen user
-    shell: docker-compose run cli create_user -e dev -p 123456
+    shell: docker-compose run cli create_user -e dev -g Dev -f Idoire -p 123456
     args:
       chdir: "/opt/caliopen/devtools"
 
