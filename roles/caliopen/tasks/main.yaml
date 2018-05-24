@@ -48,7 +48,7 @@
   template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
   notify:
       - restart nginx
-  when: not use_https
+  when: use_https == 'false'
 
 - name: install docker
   shell: curl -sSL https://get.docker.com/ | sh

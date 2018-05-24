@@ -53,7 +53,7 @@ You can now access your caliopen instance with your web browser on localhost:808
 ## Load demo fixtures data
 
 ```
-ansible-playbook -i hosts -K playbook-load-data.yml
+ansible-playbook -i hosts playbook-load-data.yml
 ```
 
 It will create a dev user with 123456 as password and load some messages
