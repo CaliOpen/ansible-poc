@@ -17,6 +17,11 @@ For deployment on Gandi's server, please modify the hosts file and add your valu
 - ansible_ssh_host=
 - ansible_ssh_private_key_file= (Only if your authentification on Gandi's server is with SSH key. If not, you can remove the ansible_ssh_private_key_file method)
 
+### To deploy using HTTPS only
+
+If you have a TLS certificate and the related private key, you can set `use_https` variable to true in the hosts file
+and place the related crt and key files inside roles/caliopen/file directory using file name: caliopen.crt and caliopen.key
+
 
 You can now deploy the docker's stack on a machine
 
@@ -48,7 +53,7 @@ You can now access your caliopen instance with your web browser on localhost:808
 ## Load demo fixtures data
 
 ```
-ansible-playbook -i hosts -K playbook-load-data.yml
+ansible-playbook -i hosts playbook-load-data.yml
 ```
 
 It will create a dev user with 123456 as password and load some messages

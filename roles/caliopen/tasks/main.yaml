@@ -36,11 +36,19 @@
   with_items:
     - caliopen.crt
     - caliopen.key
+  when: use_https
 
-- name: configure nginx
+- name: configure nginx using https
+  template: src=nginx_https.j2 dest=/etc/nginx/sites-enabled/poc
+  notify:
+      - restart nginx
+  when: use_https
+
+- name: configure nginx only http
   template: src=nginx.j2 dest=/etc/nginx/sites-enabled/poc
   notify:
       - restart nginx
+  when: use_https == 'false'
 
 - name: install docker
   shell: curl -sSL https://get.docker.com/ | sh
