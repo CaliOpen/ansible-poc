@@ -1,6 +1,8 @@
 [caliopen:vars]
-use_https=false
+use_https=true
+stage=true
 vhost_name=poc.caliopen.org
+compose_file="{{ '/opt/caliopen/devtools/docker-compose.staging.yml' if stage == 'true' else '/opt/caliopen/devtools/docker-compose.yml' }}"
 
 [caliopen]
 docker-stack ansible_ssh_host= ansible_ssh_user=root ansible_ssh_private_key_file=
