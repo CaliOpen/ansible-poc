@@ -72,9 +72,10 @@
   shell: docker-compose build
   args:
     chdir: "{{ devtools_dir }}"
+  when: stage == 'false'
 
 - name: docker up redis cassandra elasticsearch
-  shell: docker-compose up -d redis cassandra elasticsearch
+  shell: docker-compose -f {{ compose_file }} up -d redis cassandra elasticsearch
   args:
     chdir: "{{ devtools_dir }}"
 
@@ -83,9 +84,16 @@
     host: 0.0.0.0
     port: 9042
     delay: 30
+  when: stage == 'false'
+
+- name: pull docker services images
+  shell: docker-compose -f docker-compose.staging.yml pull
+  args:
+    chdir: "{{ devtools_dir }}"
+  when: stage 
 
 - name: setup storage
-  shell: docker-compose run cli setup
+  shell: docker-compose -f {{ compose_file }} run cli setup
   args:
     chdir: "{{ devtools_dir }}"
 
@@ -94,3 +102,4 @@
 
 - name: start full caliopen docker stack
   service: name=caliopen-stack state=started
+  notify: restart nginx
