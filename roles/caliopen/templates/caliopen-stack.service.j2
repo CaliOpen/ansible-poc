@@ -5,8 +5,8 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/usr/local/bin/docker-compose up frontend broker identity_poller
-ExecStop=/usr/local/bin/docker-compose stop
+ExecStart=/usr/local/bin/docker-compose -f {{ compose_file }} up
+ExecStop=/usr/local/bin/docker-compose -f {{ compose_file }} stop
 
 [Install]
 WantedBy=local.target

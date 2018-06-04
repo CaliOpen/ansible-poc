@@ -5,16 +5,16 @@
     user_home: "{{ lookup('env', 'HOME') }}"
   tasks:
   - name: Create a Caliopen Admin
-    shell: docker-compose run cli create_user -e admin -p 123456
+    shell: docker-compose -f {{ compose_file }} run cli create_user -e admin -p 123456
     args:
       chdir: "/opt/caliopen/devtools"
 
   - name: Create a Caliopen user
-    shell: docker-compose run cli create_user -e dev -g Dev -f Idoire -p 123456
+    shell: docker-compose -f {{ compose_file }} run  cli create_user -e dev -g Dev -f Idoire -p 123456
     args:
       chdir: "/opt/caliopen/devtools"
 
   - name: Import datas
-    shell: docker-compose run cli import -e dev@caliopen.local -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
+    shell: docker-compose -f {{ compose_file }} run cli import -e dev@caliopen.local -f mbox -p devtools/fixtures/mbox/dev@caliopen.local
     args:
       chdir: "/opt/caliopen/devtools"
