@@ -2,6 +2,7 @@
 use_https=true
 stage=true
 vhost_name=poc.caliopen.org
+devtools_dir=/opt/caliopen/devtools/
 compose_file="{{ devtools_dir+'docker-compose.staging.yml' if stage == 'true' else devtools_dir+'docker-compose.yml' }}"
 
 [caliopen]
