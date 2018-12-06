@@ -6,7 +6,9 @@ upstream nodeapp {
 server {
     listen 		80;
     listen              [::]:80;
+    {% if vhost_name %}
     server_name         {{ vhost_name }};
+    {% endif %}
 
     location / {
         proxy_http_version 1.1;

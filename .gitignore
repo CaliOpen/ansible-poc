@@ -169,6 +169,7 @@ node_modules
 
 # ansible inventory
 hosts
+hosts-*
 
 # ansible vault password file
 .vault_pass.txt
